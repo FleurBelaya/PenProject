@@ -1,0 +1,76 @@
+<MainScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 10
+        padding: 20
+
+        Button:
+            text: "Личный кабинет"
+            background_color: 1, 1, 1, 1
+            on_press: app.root.current = "profile"
+
+        Button:
+            text: "Челленджи"
+            background_color: 1, 1, 1, 1
+            on_press: app.root.current = "challenges"
+
+        Button:
+            text: "Упражнения"
+            background_color: 1, 1, 1, 1
+            on_press: app.root.current = "exercises"
+
+        Button:
+            text: "Статьи"
+            background_color: 1, 1, 1, 1
+            on_press: app.root.current = "articles"
+
+        Button:
+            id: goal_button
+            text: "Цель не выполнена"
+            background_color: 1, 1, 1, 1
+            on_press: root.toggle_goal()
+
+
+<ProfileScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            size_hint: 0.3, None
+            height: 40
+            text: "Назад"
+            on_press: app.root.current = "main"
+        Label:
+            text: "Личный кабинет"
+
+<ChallengesScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            size_hint: 0.3, None
+            height: 40
+            text: "Назад"
+            on_press: app.root.current = "main"
+        Label:
+            text: "Челленджи"
+
+<ExercisesScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            size_hint: 0.3, None
+            height: 40
+            text: "Назад"
+            on_press: app.root.current = "main"
+        Label:
+            text: "Упражнения"
+
+<ArticlesScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            size_hint: 0.3, None
+            height: 40
+            text: "Назад"
+            on_press: app.root.current = "main"
+        Label:
+            text: "Статьи"
