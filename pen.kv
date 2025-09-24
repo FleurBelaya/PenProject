@@ -1,3 +1,60 @@
+ScreenManager:
+    AuthScreen:
+        name: 'auth'
+    MainScreen:
+        name: "main"
+    ProfileScreen:
+        name: "profile"
+    ChallengesScreen:
+        name: "challenges"
+    ExercisesScreen:
+        name: "exercises"
+    ArticlesScreen:
+        name: "articles"
+    ArticleDetailScreen:
+        name: "article_detail"
+    ShopScreen:
+        name: "shop"
+
+<AuthScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: 'Вход / Регистрация'
+            font_size: 24
+
+        TextInput:
+            id: email_input
+            hint_text: 'Введите email'
+
+        TextInput:
+            id: password_input
+            hint_text: 'Введите пароль'
+            password: True
+
+        Label:
+            id: error_label
+            color: 1, 0, 0, 1
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 10
+
+            Button:
+                text: 'Войти'
+                on_press: root.login_user()
+
+            Button:
+                text: 'Зарегистрироваться'
+                on_press: root.register_user()
+
+
 <MainScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -34,13 +91,54 @@
 <ProfileScreen>:
     BoxLayout:
         orientation: "vertical"
+        padding: 20
+        spacing: 10
+
         Button:
-            size_hint: 0.3, None
-            height: 40
+            id: back_button
             text: "Назад"
-            on_press: app.root.current = "main"
+            size_hint_y: None
+            height: 40
+            on_press: app.root.current = 'main'
+
         Label:
-            text: "Личный кабинет"
+            text: "Имя:"
+        TextInput:
+            id: name_input
+            hint_text: "Введите ваше имя"
+
+        Label:
+            text: "Любимый жанр:"
+        Spinner:
+            id: favorite_genre_spinner
+            text: "Выберите жанр"
+            values: ['Фантастика', 'Романтика', 'Драма', 'Комедия']
+
+        Label:
+            text: "Цель (слова на день):"
+        TextInput:
+            id: goal_input
+            hint_text: "Введите вашу цель на день"
+
+        Label:
+            id: points_label
+            text: "Баллы: 0"
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 10
+
+            Button:
+                text: 'Магазин улучшений'
+                on_press: app.root.current = 'shop'
+
+            Button:
+                text: 'Сохранить'
+                on_press:
+                    # предполагается, что в profile_screen.py есть метод save_user_data
+                    app.root.get_screen('profile').save_user_data() if hasattr(app.root.get_screen('profile'), 'save_user_data') else None
+
 
 <ChallengesScreen>:
     BoxLayout:
@@ -56,21 +154,117 @@
 <ExercisesScreen>:
     BoxLayout:
         orientation: "vertical"
+        padding: 10
+        spacing: 10
+
         Button:
             size_hint: 0.3, None
             height: 40
             text: "Назад"
             on_press: app.root.current = "main"
+
         Label:
             text: "Упражнения"
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 8
+
+            Button:
+                text: 'Три в ряд'
+                on_press: root.on_exercise_selected('three_in_row')
+
+            Button:
+                text: 'Поэтический след'
+                on_press: root.on_exercise_selected('poetic_trace')
+
+            Button:
+                text: 'Почему?'
+                on_press: root.on_exercise_selected('why')
+
+            Label:
+                id: exercise_prompt
+                text: ''
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            TextInput:
+                id: exercise_input
+                hint_text: 'Ваш ответ...'
+                size_hint_y: None
+                height: 40
+
 
 <ArticlesScreen>:
     BoxLayout:
         orientation: "vertical"
+        spacing: 10
+        padding: 10
+
         Button:
             size_hint: 0.3, None
             height: 40
             text: "Назад"
             on_press: app.root.current = "main"
-        Label:
-            text: "Статьи"
+
+        ScrollView:
+            do_scroll_x: False
+
+            BoxLayout:
+                id: articles_container
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+
+
+<ArticleDetailScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Button:
+            size_hint: 0.3, None
+            height: 40
+            text: "Назад к статьям"
+            on_press: app.root.current = "articles"
+
+        ScrollView:
+            Label:
+                text: root.article_text
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+
+
+<ShopScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 8
+
+        Button:
+            size_hint_y: None
+            height: 40
+            text: 'Назад'
+            on_press: app.root.current = 'profile'
+
+        Button:
+            text: "Улучшение 1 (50 баллов)"
+            on_press: root.buy_item(1, 50)
+
+        Button:
+            text: "Улучшение 2 (100 баллов)"
+            on_press: root.buy_item(2, 100)
+
+        Button:
+            text: "Улучшение 3 (150 баллов)"
+            on_press: root.buy_item(3, 150)
+
+        Button:
+            text: "Улучшение 4 (200 баллов)"
+            on_press: root.buy_item(4, 200)
+
+        Button:
+            text: "Улучшение 5 (250 баллов)"
+            on_press: root.buy_item(5, 250)

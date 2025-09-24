@@ -1,23 +1,28 @@
 from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager
-
+from kivy.lang import Builder
+from kivy.uix.screenmanager import Screen
+import sqlite3
 from screens.main_screen import MainScreen
 from screens.profile_screen import ProfileScreen
 from screens.challenges_screen import ChallengesScreen
 from screens.exercises_screen import ExercisesScreen
 from screens.articles_screen import ArticlesScreen
+from screens.article_detail_screen import ArticleDetailScreen
+from screens.shop_screen import ShopScreen
+from screens.auth_screen import AuthScreen
 
 
 class PenApp(App):
+    current_user_id = None
+
     def build(self):
-        sm = ScreenManager()
-        sm.add_widget(MainScreen(name="main"))
-        sm.add_widget(ProfileScreen(name="profile"))
-        sm.add_widget(ChallengesScreen(name="challenges"))
-        sm.add_widget(ExercisesScreen(name="exercises"))
-        sm.add_widget(ArticlesScreen(name="articles"))
-        return sm
+        return None
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     PenApp().run()
+
+
+
+
+
