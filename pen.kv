@@ -29,11 +29,15 @@ ScreenManager:
         TextInput:
             id: email_input
             hint_text: 'Введите email'
+            size_hint_y: None
+            height: 40
 
         TextInput:
             id: password_input
             hint_text: 'Введите пароль'
             password: True
+            size_hint_y: None
+            height: 40
 
         Label:
             id: error_label
@@ -53,7 +57,6 @@ ScreenManager:
             Button:
                 text: 'Зарегистрироваться'
                 on_press: root.register_user()
-
 
 <MainScreen>:
     BoxLayout:
