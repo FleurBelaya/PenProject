@@ -1,9 +1,12 @@
 from kivy.uix.screenmanager import Screen
+from kivy.app import App
 import sqlite3
 import random
 
+
 class ExercisesScreen(Screen):
     def on_exercise_selected(self, exercise_type):
+        self.current_exercise_type = exercise_type
         conn = sqlite3.connect('articles.db')
         cursor = conn.cursor()
 
@@ -23,6 +26,12 @@ class ExercisesScreen(Screen):
             prompt = ''
 
         conn.close()
-
         self.ids.exercise_prompt.text = f"{prompt}\nПридумайте сюжет:"
         self.ids.exercise_input.text = ''
+
+    def on_exercise_submitted(self):
+        app = App.get_running_app()
+        main_screen = self.manager.get_screen('main')
+        main_screen.add_points(10)
+        if hasattr(self, 'current_exercise_type'):
+            self.on_exercise_selected(self.current_exercise_type)

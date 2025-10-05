@@ -2,6 +2,7 @@ from kivy.uix.screenmanager import Screen
 import sqlite3
 from kivy.app import App
 
+
 class AuthScreen(Screen):
 
     def ensure_users_table(self):
@@ -9,13 +10,19 @@ class AuthScreen(Screen):
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT UNIQUE,
                 password TEXT,
                 name TEXT,
                 favorite_genre TEXT,
-                goal INTEGER DEFAULT 0,
-                points INTEGER DEFAULT 0
+                goal TEXT,
+                points INTEGER DEFAULT 0,
+                main_color TEXT,
+                emoji_main TEXT,
+                profile_color TEXT,
+                emoji_profile TEXT,
+                active_challenge INTEGER,
+                last_goal_date TEXT
             )
         ''')
         conn.commit()
@@ -23,9 +30,9 @@ class AuthScreen(Screen):
 
     def register_user(self):
         self.ensure_users_table()
-
         conn = sqlite3.connect('articles.db')
         cursor = conn.cursor()
+
         email = self.ids.email_input.text.strip()
         password = self.ids.password_input.text.strip()
 
@@ -50,19 +57,23 @@ class AuthScreen(Screen):
 
     def login_user(self):
         self.ensure_users_table()
-
         conn = sqlite3.connect('articles.db')
         cursor = conn.cursor()
+
         email = self.ids.email_input.text.strip()
         password = self.ids.password_input.text.strip()
+
         cursor.execute(
             'SELECT id FROM users WHERE email = ? AND password = ?',
             (email, password)
         )
         row = cursor.fetchone()
+
         if row:
             App.get_running_app().current_user_id = row[0]
             self.manager.current = 'main'
         else:
             self.ids.error_label.text = 'Неверный email или пароль'
+
         conn.close()
+

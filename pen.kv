@@ -11,6 +11,8 @@ ScreenManager:
         name: "exercises"
     ArticlesScreen:
         name: "articles"
+    ArticleFormScreen:
+        name: 'article_form'
     ArticleDetailScreen:
         name: "article_detail"
     ShopScreen:
@@ -65,21 +67,25 @@ ScreenManager:
         padding: 20
 
         Button:
+            id: profile_button
             text: "Личный кабинет"
             background_color: 1, 1, 1, 1
             on_press: app.root.current = "profile"
 
         Button:
+            id: challenges_button
             text: "Челленджи"
             background_color: 1, 1, 1, 1
             on_press: app.root.current = "challenges"
 
         Button:
+            id: exercises_button
             text: "Упражнения"
             background_color: 1, 1, 1, 1
             on_press: app.root.current = "exercises"
 
         Button:
+            id: articles_button
             text: "Статьи"
             background_color: 1, 1, 1, 1
             on_press: app.root.current = "articles"
@@ -89,6 +95,21 @@ ScreenManager:
             text: "Цель не выполнена"
             background_color: 1, 1, 1, 1
             on_press: root.toggle_goal()
+
+        Label:
+            text: "Активный челлендж:"
+
+        Label:
+            id: current_challenge_label
+            text: ""
+
+        Button:
+            id: complete_challenge_button
+            text: "Выполнить челлендж"
+            size_hint_y: None
+            height: 40
+            on_press: root.complete_challenge()
+
 
 
 <ProfileScreen>:
@@ -133,14 +154,14 @@ ScreenManager:
             spacing: 10
 
             Button:
+                id: shop_button
                 text: 'Магазин улучшений'
                 on_press: app.root.current = 'shop'
 
             Button:
+                id: save_button
                 text: 'Сохранить'
-                on_press:
-                    # предполагается, что в profile_screen.py есть метод save_user_data
-                    app.root.get_screen('profile').save_user_data() if hasattr(app.root.get_screen('profile'), 'save_user_data') else None
+                on_press: app.root.get_screen('profile').save_user_data()
 
 
 <ChallengesScreen>:
@@ -153,6 +174,38 @@ ScreenManager:
             on_press: app.root.current = "main"
         Label:
             text: "Челленджи"
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 5
+            Button:
+                text: "Написать 10000 слов"
+                on_press: root.start_challenge(1)
+            Button:
+                text: "История из 100 предложений"
+                on_press: root.start_challenge(2)
+            Button:
+                text: "История без диалогов"
+                on_press: root.start_challenge(3)
+            Button:
+                text: "Написать сюжет в 100 слов"
+                on_press: root.start_challenge(4)
+            Button:
+                text: "Диалог без глаголов действия"
+                on_press: root.start_challenge(5)
+
+        Label:
+            id: current_challenge_label
+            text: ""
+            size_hint_y: None
+            height: self.texture_size[1]
+        Button:
+            id: cancel_challenge_button
+            text: "Отменить челлендж"
+            size_hint_y: None
+            height: 40
+            on_press: root.cancel_challenge()
+
 
 <ExercisesScreen>:
     BoxLayout:
@@ -196,6 +249,9 @@ ScreenManager:
                 hint_text: 'Ваш ответ...'
                 size_hint_y: None
                 height: 40
+                multiline: False
+                on_text_validate: root.on_exercise_submitted()
+
 
 
 <ArticlesScreen>:
@@ -210,6 +266,13 @@ ScreenManager:
             text: "Назад"
             on_press: app.root.current = "main"
 
+        Button:
+            size_hint: 0.3, None
+            height: 40
+            text: "Добавить статью"
+            on_press: root.open_article_form()
+
+
         ScrollView:
             do_scroll_x: False
 
@@ -218,6 +281,40 @@ ScreenManager:
                 orientation: "vertical"
                 size_hint_y: None
                 height: self.minimum_height
+
+<ArticleFormScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 10
+        padding: 20
+
+        Label:
+            text: "Заголовок:"
+        TextInput:
+            id: new_article_title
+            hint_text: "Введите заголовок"
+            size_hint_y: None
+            height: 40
+
+        Label:
+            text: "Текст:"
+        TextInput:
+            id: new_article_text
+            hint_text: "Введите текст"
+            size_hint_y: None
+            height: 200
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 10
+            Button:
+                text: "Отправить"
+                on_press: root.submit_article()
+            Button:
+                text: "Назад"
+                on_press: app.root.current = 'articles'
+
 
 
 <ArticleDetailScreen>:
@@ -253,21 +350,17 @@ ScreenManager:
             on_press: app.root.current = 'profile'
 
         Button:
-            text: "Улучшение 1 (50 баллов)"
+            text: "Зелёные кнопки (50 баллов)"
             on_press: root.buy_item(1, 50)
 
         Button:
-            text: "Улучшение 2 (100 баллов)"
+            text: "Синие кнопки (100 баллов)"
             on_press: root.buy_item(2, 100)
 
         Button:
-            text: "Улучшение 3 (150 баллов)"
+            text: "(´ ∀ ` *) (150 баллов)"
             on_press: root.buy_item(3, 150)
 
         Button:
-            text: "Улучшение 4 (200 баллов)"
+            text: "(* ^ ω ^) (200 баллов)"
             on_press: root.buy_item(4, 200)
-
-        Button:
-            text: "Улучшение 5 (250 баллов)"
-            on_press: root.buy_item(5, 250)
