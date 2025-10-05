@@ -1,10 +1,8 @@
 import sqlite3
 
-conn = sqlite3.connect("articles.db")
-cursor = conn.cursor()
+conn = sqlite3.connect('articles.db')
+cur = conn.cursor()
 
-cursor.execute("DROP TABLE IF EXISTS users")
-
+cur.execute('DELETE FROM articles')
 conn.commit()
 conn.close()
-
