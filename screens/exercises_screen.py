@@ -2,6 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.app import App
 import sqlite3
 
+
 class ExercisesScreen(Screen):
     def on_pre_enter(self):
         self.apply_color_upgrade()
