@@ -4,6 +4,16 @@ from kivy.app import App
 
 
 class AuthScreen(Screen):
+    def on_pre_enter(self):
+        self.clear_fields()
+
+    def clear_fields(self):
+        ids = self.ids
+        if not ids:
+            return
+        ids.email_input.text = ""
+        ids.password_input.text = ""
+        ids.error_label.text = ""
 
     def ensure_users_table(self):
         conn = sqlite3.connect('articles.db')
@@ -32,15 +42,12 @@ class AuthScreen(Screen):
         self.ensure_users_table()
         conn = sqlite3.connect('articles.db')
         cursor = conn.cursor()
-
         email = self.ids.email_input.text.strip()
         password = self.ids.password_input.text.strip()
-
         if not email or not password:
             self.ids.error_label.text = 'Введите email и пароль'
             conn.close()
             return
-
         try:
             cursor.execute(
                 'INSERT INTO users (email, password, points) VALUES (?, ?, 0)',
@@ -49,6 +56,7 @@ class AuthScreen(Screen):
             conn.commit()
             user_id = cursor.lastrowid
             App.get_running_app().current_user_id = user_id
+            self.ids.error_label.text = ""
             self.manager.current = 'main'
         except sqlite3.IntegrityError:
             self.ids.error_label.text = 'Пользователь с таким email уже существует'
@@ -59,21 +67,17 @@ class AuthScreen(Screen):
         self.ensure_users_table()
         conn = sqlite3.connect('articles.db')
         cursor = conn.cursor()
-
         email = self.ids.email_input.text.strip()
         password = self.ids.password_input.text.strip()
-
         cursor.execute(
             'SELECT id FROM users WHERE email = ? AND password = ?',
             (email, password)
         )
         row = cursor.fetchone()
-
         if row:
             App.get_running_app().current_user_id = row[0]
+            self.ids.error_label.text = ""
             self.manager.current = 'main'
         else:
             self.ids.error_label.text = 'Неверный email или пароль'
-
         conn.close()
-

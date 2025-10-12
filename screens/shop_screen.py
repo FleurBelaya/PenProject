@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
 import sqlite3
+import random
 
 class ShopScreen(Screen):
     def buy_item(self, item_id, cost):
@@ -82,3 +83,59 @@ class ShopScreen(Screen):
                 profile_btn.text = "(* ^ о ^)" + profile_btn.text
 
         conn.close()
+
+    def buy_random_upgrade(self):
+        app = App.get_running_app()
+        user_id = getattr(app, 'current_user_id', None)
+        if not user_id:
+            return
+
+        conn = sqlite3.connect('articles.db')
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_upgrades (
+                user_id INTEGER NOT NULL,
+                upgrade_id INTEGER NOT NULL,
+                PRIMARY KEY(user_id, upgrade_id)
+            )
+        ''')
+
+        cursor.execute('SELECT points FROM users WHERE id = ?', (user_id,))
+        row = cursor.fetchone()
+        if not row or row[0] < 100:
+            conn.close()
+            print("Недостаточно баллов для покупки случайного улучшения (нужно 100)")
+            return
+
+        cursor.execute('SELECT upgrade_id FROM user_upgrades WHERE user_id = ?', (user_id,))
+        owned_upgrades = {row[0] for row in cursor.fetchall()}
+        
+        available_upgrades = [i for i in range(1, 6) if i not in owned_upgrades]
+        
+        if not available_upgrades:
+            conn.close()
+            print("Все улучшения уже куплены!")
+            return
+
+        random_upgrade = random.choice(available_upgrades)
+        
+        cursor.execute('UPDATE users SET points = points - 100 WHERE id = ?', (user_id,))
+        cursor.execute(
+            "INSERT INTO user_upgrades (user_id, upgrade_id) VALUES (?, ?)",
+            (user_id, random_upgrade)
+        )
+
+        conn.commit()
+        conn.close()
+
+        print(f"Куплено случайное улучшение: {random_upgrade}")
+
+        try:
+            profile = self.manager.get_screen('profile')
+            if hasattr(profile, 'load_user_data'):
+                profile.load_user_data()
+            if hasattr(profile, 'load_upgrades'):
+                profile.load_upgrades()
+        except Exception:
+            pass

@@ -17,6 +17,9 @@ ScreenManager:
         name: "article_form"
     ShopScreen:
         name: "shop"
+    ProfileViewScreen:
+        name: "profile_view"
+
 
 <AuthScreen>:
     BoxLayout:
@@ -95,6 +98,16 @@ ScreenManager:
             text: "Цель не выполнена"
             background_color: 1, 1, 1, 1
             on_press: root.toggle_goal()
+
+        Button:
+            text: "Посмотреть профиль"
+            background_color: 1, 1, 1, 1
+            on_press: app.root.current = "profile_view"
+
+        Button:
+            text: "Выйти из аккаунта"
+            background_color: 1, 0.5, 0.5, 1
+            on_press: root.logout()
 
         Label:
             text: "Активный челлендж:"
@@ -196,6 +209,14 @@ ScreenManager:
                 on_press:
                     app.root.get_screen('profile').save_user_data() if hasattr(app.root.get_screen('profile'), 'save_user_data') else None
 
+        Button:
+            id: logout_button
+            text: 'Выйти из аккаунта'
+            size_hint_y: None
+            height: 40
+            background_color: 1, 0.5, 0.5, 1
+            on_press: app.root.get_screen('profile').logout()
+
 <ChallengesScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -224,7 +245,7 @@ ScreenManager:
                 on_press: root.start_challenge(3)
             Button:
                 id: challenge4_button
-                text: "Сделать 30 промптов"
+                text: "Проработать 30 сцен"
                 on_press: root.start_challenge(4)
             Button:
                 id: challenge5_button
@@ -383,3 +404,49 @@ ScreenManager:
         Button:
             text: "5 (250 баллов)"
             on_press: root.buy_item(5, 250)
+
+        Button:
+            text: "Случайное улучшение (100 баллов)"
+            on_press: root.buy_random_upgrade()
+
+<ProfileViewScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Button:
+            text: "Назад"
+            size_hint_y: None
+            height: 40
+            on_press: app.root.current = 'main'
+
+        Label:
+            text: "Поиск профиля пользователя"
+            font_size: 18
+
+        TextInput:
+            id: email_input
+            hint_text: 'Введите email пользователя'
+            size_hint_y: None
+            height: 40
+
+        Button:
+            text: "Найти профиль"
+            size_hint_y: None
+            height: 40
+            on_press: root.find_profile()
+
+        Label:
+            id: error_label
+            color: 1, 0, 0, 1
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        ScrollView:
+            BoxLayout:
+                id: profile_container
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: 10

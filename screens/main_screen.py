@@ -11,7 +11,7 @@ class MainScreen(Screen):
         1: "Написать 10000 слов",
         2: "Создать 5 сцен",
         3: "Придумать 10 персонажей",
-        4: "Сделать 30 промптов",
+        4: "Проработать 30 сцен",
         5: "Дописать книгу",
     }
 
@@ -148,3 +148,14 @@ class MainScreen(Screen):
 
     def go_to_profile(self):
         self.manager.current = 'profile'
+
+    def logout(self):
+        app = App.get_running_app()
+        app.current_user_id = None
+        try:
+            auth_screen = self.manager.get_screen('auth')
+            if hasattr(auth_screen, 'clear_fields'):
+                auth_screen.clear_fields()
+        except Exception:
+            pass
+        self.manager.current = 'auth'

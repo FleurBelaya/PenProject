@@ -127,3 +127,14 @@ class ProfileScreen(Screen):
             self.ids.back_button.background_color = (1, 0.95, 0.7, 1)
         if 5 in upgrades:
             self.ids.save_button.background_color = (0.95, 0.85, 1, 1)
+
+    def logout(self):
+        app = App.get_running_app()
+        app.current_user_id = None
+        try:
+            auth_screen = self.manager.get_screen('auth')
+            if hasattr(auth_screen, 'clear_fields'):
+                auth_screen.clear_fields()
+        except Exception:
+            pass
+        self.manager.current = 'auth'
