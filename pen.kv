@@ -129,6 +129,11 @@ ScreenManager:
             height: 40
             on_press: root.cancel_challenge()
 
+        Button:
+            text: "Выход"
+            background_color: 1, 0.5, 0.5, 1
+            on_press: app.stop()
+
 <ProfileScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -423,7 +428,7 @@ ScreenManager:
 
         Label:
             text: "Поиск профиля пользователя"
-            font_size: 18
+            font_size: 15
 
         TextInput:
             id: email_input
